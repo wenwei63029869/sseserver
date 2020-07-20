@@ -95,7 +95,7 @@ func (c *connection) writer() {
 	}
 }
 
-func connectionHandler(h *hub) http.Handler {
+func ConnectionHandler(h *hub) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// write headers
 		headers := w.Header()

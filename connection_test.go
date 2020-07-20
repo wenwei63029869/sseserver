@@ -31,7 +31,7 @@ func TestConnectionHandler(t *testing.T) {
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
-	handler := connectionHandler(h)
+	handler := ConnectionHandler(h)
 	ctx := req.Context()
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond)
 	defer cancel()
