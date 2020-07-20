@@ -17,7 +17,7 @@ func TestAdminHTTPIndex(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := adminHandler(s)
+	handler := AdminHandler(s)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
@@ -37,7 +37,7 @@ func TestAdminHTTPStatusAPI(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := adminHandler(s)
+	handler := AdminHandler(s)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
@@ -68,7 +68,7 @@ func TestAdminDisableEndpoints(t *testing.T) {
 		}
 
 		rr := httptest.NewRecorder()
-		handler := adminHandler(s)
+		handler := AdminHandler(s)
 		handler.ServeHTTP(rr, req)
 
 		if status := rr.Code; status != http.StatusForbidden {

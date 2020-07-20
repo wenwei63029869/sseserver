@@ -110,7 +110,7 @@ func adminStatusDataHandler(w http.ResponseWriter, r *http.Request, s *Server) {
 	fmt.Fprint(w, string(b))
 }
 
-func adminHandler(s *Server) http.Handler {
+func AdminHandler(s *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if s.Options.DisableAdminEndpoints {
 			http.Error(w, "403 admin endpoint disabled", http.StatusForbidden)

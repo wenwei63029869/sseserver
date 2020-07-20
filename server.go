@@ -52,7 +52,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	)
 	mux.Handle(
 		"/admin/",
-		adminHandler(s),
+		AdminHandler(s),
 	)
 	mux.ServeHTTP(w, r)
 }
