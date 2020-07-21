@@ -63,8 +63,8 @@ func (c *connection) writer() {
 		select {
 		case msg, ok := <-c.send:
 			if !ok { // chan was closed
-				// ...our hub told us we have nothing left to do
-				debug.Debug("hub told us to shut down")
+				// ...our Hub told us we have nothing left to do
+				debug.Debug("Hub told us to shut down")
 				return
 			}
 			// otherwise write message out to client
@@ -95,7 +95,7 @@ func (c *connection) writer() {
 	}
 }
 
-func ConnectionHandler(h *hub) http.Handler {
+func ConnectionHandler(h *Hub) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// write headers
 		headers := w.Header()
@@ -105,7 +105,7 @@ func ConnectionHandler(h *hub) http.Handler {
 		headers.Set("Connection", "keep-alive")
 		headers.Set("Server", "mroth/sseserver")
 
-		// get namespace from URL path, init connection & register with hub
+		// get namespace from URL path, init connection & register with Hub
 		namespace := r.URL.Path
 		c := newConnection(w, r, namespace)
 		h.register <- c

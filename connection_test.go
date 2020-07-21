@@ -17,7 +17,7 @@ New connections should get...
 */
 func TestConnectionHandler(t *testing.T) {
 	// need to have a running hub, otherwise conn blocks trying to register
-	h := newHub()
+	h := NewHub()
 	h.Start()
 	defer h.Shutdown()
 

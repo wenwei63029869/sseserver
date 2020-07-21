@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func mockHub(numConnections int) (h *hub) {
-	h = newHub()
+func mockHub(numConnections int) (h *Hub) {
+	h = NewHub()
 	h.Start()
 	for i := 0; i < numConnections; i++ {
 		h.register <- mockConn("/test")
@@ -23,8 +23,8 @@ func mockConn(namespace string) *connection {
 	}
 }
 
-func mockSinkedHub(initialConnections map[string]int) (h *hub) {
-	h = newHub()
+func mockSinkedHub(initialConnections map[string]int) (h *Hub) {
+	h = NewHub()
 	h.Start()
 	for namespace, num := range initialConnections {
 		for i := 0; i < num; i++ {
@@ -35,7 +35,7 @@ func mockSinkedHub(initialConnections map[string]int) (h *hub) {
 }
 
 // mock a connection that sinks data sent to it
-func mockSinkedConn(namespace string, h *hub) *connection {
+func mockSinkedConn(namespace string, h *Hub) *connection {
 	c := &connection{
 		send:      make(chan []byte, connBufSize),
 		created:   time.Now(),
@@ -144,9 +144,9 @@ func TestBroadcastWildcards(t *testing.T) {
 	}
 }
 
-// if we force unregister a connection from the hub, we tell it exit by closing
+// if we force unregister a connection from the Hub, we tell it exit by closing
 // its send channel when a connection exits for any reason, it tries to
-// unregister itself from the hub thus, this could theoretically lead to a panic
+// unregister itself from the Hub thus, this could theoretically lead to a panic
 // if we try to close twice...
 func TestDoubleUnregister(t *testing.T) {
 	h := mockHub(0)
@@ -159,7 +159,7 @@ func TestDoubleUnregister(t *testing.T) {
 	h.unregister <- c1
 	h.unregister <- c1
 	h.broadcast <- SSEMessage{Data: []byte("no-op to ensure finished")}
-	// ^^ the above broadcast forces the hub run loop to be past the initial
+	// ^^ the above broadcast forces the Hub run loop to be past the initial
 	// registrations, preventing a possible race condition.
 	actual, expected := len(h.connections), 1
 	if actual != expected {
@@ -176,7 +176,7 @@ func TestDoubleRegister(t *testing.T) {
 	h.register <- c1
 	h.register <- c1
 	h.broadcast <- SSEMessage{Data: []byte("no-op to ensure finished")}
-	// ^^ the above broadcast forces the hub run loop to be past the initial
+	// ^^ the above broadcast forces the Hub run loop to be past the initial
 	// registrations, preventing a possible race condition.
 	actual, expected := len(h.connections), 1
 	if actual != expected {
@@ -195,7 +195,7 @@ func TestKillsStalledConnection(t *testing.T) {
 	h.register <- stalled
 	h.register <- sinked
 	h.broadcast <- SSEMessage{Data: []byte("no-op to ensure finished")}
-	// ^^ the above broadcast forces the hub run loop to be past the initial
+	// ^^ the above broadcast forces the Hub run loop to be past the initial
 	// registrations, preventing a possible race condition.
 	numSetupConns := len(h.connections)
 	if numSetupConns != 2 {
@@ -270,7 +270,7 @@ func BenchmarkBroadcastNS(b *testing.B) {
 	var msgBytes = []byte("foo bar woo")
 	var sizes = []int{100, 1000, 10000}
 
-	mockDensityHub := func(s int) *hub {
+	mockDensityHub := func(s int) *Hub {
 		return mockSinkedHub(map[string]int{
 			"/dense":  int(float64(s) * 0.95),
 			"/sparse": int(float64(s) * 0.05),
@@ -282,13 +282,13 @@ func BenchmarkBroadcastNS(b *testing.B) {
 			for _, s := range sizes {
 				slashName := "/" + namespace
 				b.Run(strconv.Itoa(s), func(b *testing.B) {
-					hub := mockDensityHub(s)
+					Hub := mockDensityHub(s)
 					b.ResetTimer()
 					for n := 0; n < b.N; n++ {
-						hub.broadcast <- SSEMessage{"", msgBytes, slashName}
+						Hub.broadcast <- SSEMessage{"", msgBytes, slashName}
 					}
 					b.StopTimer()
-					hub.Shutdown()
+					Hub.Shutdown()
 				})
 			}
 		})
