@@ -9,7 +9,7 @@ import (
 // it should serve a HTML index page
 func TestAdminHTTPIndex(t *testing.T) {
 	s := NewServer()
-	defer s.hub.Shutdown()
+	defer s.Hub.Shutdown()
 
 	req, err := http.NewRequest("GET", "/admin/", nil)
 	if err != nil {
@@ -29,7 +29,7 @@ func TestAdminHTTPIndex(t *testing.T) {
 // it should expose a REST JSON status API
 func TestAdminHTTPStatusAPI(t *testing.T) {
 	s := NewServer()
-	defer s.hub.Shutdown()
+	defer s.Hub.Shutdown()
 
 	req, err := http.NewRequest("GET", "/admin/status.json", nil)
 	if err != nil {
@@ -58,7 +58,7 @@ func TestAdminHTTPStatusAPI(t *testing.T) {
 // it should disable all HTTP endpoints based on ServerOptions
 func TestAdminDisableEndpoints(t *testing.T) {
 	s := NewServer()
-	defer s.hub.Shutdown()
+	defer s.Hub.Shutdown()
 	s.Options.DisableAdminEndpoints = true
 
 	for _, path := range []string{"/admin/", "/admin/status.json"} {

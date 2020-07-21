@@ -40,12 +40,12 @@ func (s *Server) Status() ReportingStatus {
 		Node:        fmt.Sprintf("%s-%s-%s", platform(), env(), nodeName()),
 		Status:      "OK",
 		Reported:    time.Now().Unix(),
-		StartupTime: s.hub.startupTime.Unix(),
-		SentMsgs:    s.hub.sentMsgs,
+		StartupTime: s.Hub.startupTime.Unix(),
+		SentMsgs:    s.Hub.sentMsgs,
 	}
 
 	stats.Connections = connStatusList{}
-	for k := range s.hub.connections {
+	for k := range s.Hub.connections {
 		stats.Connections = append(stats.Connections, k.Status())
 	}
 	sort.Sort(stats.Connections)

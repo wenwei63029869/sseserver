@@ -16,7 +16,7 @@ import (
 type Server struct {
 	Broadcast chan<- SSEMessage
 	Options   ServerOptions
-	hub       *Hub
+	Hub       *Hub
 }
 
 // ServerOptions defines a set of high-level user options that can be customized
@@ -29,16 +29,16 @@ type ServerOptions struct {
 // NewServer creates a new Server and returns a reference to it.
 func NewServer() *Server {
 	s := Server{
-		hub: NewHub(),
+		Hub: NewHub(),
 	}
 
 	// start up our actual internal connection Hub
 	// which we keep in the server struct as private
-	s.hub.Start()
+	s.Hub.Start()
 
 	// then re-export just the Hub's broadcast chan to public
 	// (will be typecast to receive-only)
-	s.Broadcast = s.hub.broadcast
+	s.Broadcast = s.Hub.broadcast
 
 	return &s
 }
@@ -48,7 +48,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mux := http.NewServeMux()
 	mux.Handle(
 		"/subscribe/",
-		http.StripPrefix("/subscribe", ConnectionHandler(s.hub)),
+		http.StripPrefix("/subscribe", ConnectionHandler(s.Hub)),
 	)
 	mux.Handle(
 		"/admin/",
